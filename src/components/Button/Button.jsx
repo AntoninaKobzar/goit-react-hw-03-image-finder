@@ -1,16 +1,25 @@
-import PropTypes from 'prop-types';
-const Button = ({ onClick }) => (
-    <div>
-        <button type="button" onClick={onClick}>
+    import React, { Component } from 'react';
+    import PropTypes from 'prop-types';
+    import css from './Button.module.css';
+
+
+
+    class Button extends Component {
+    render() {
+        return (
+        <button
+            type="button"
+            className={css.button}
+            onClick={this.props.onNextPage}
+        >
             Load more
         </button>
-    </div>
-);
+        );
+    }
+    }
 
-Button.propTypes = {
-    onClick: PropTypes.func.isRequired,
-};
+    Button.propTypes = {
+    onNextPage: PropTypes.func,
+    };
 
-export default Button;
-// При натисканні на кнопку Load more повинна довантажуватись наступна порція зображень і рендеритися разом із попередніми.Кнопка повинна 
-// рендеритися лише тоді, коли є якісь завантажені зображення.Якщо масив зображень порожній, кнопка не рендериться.
+    export default Button;

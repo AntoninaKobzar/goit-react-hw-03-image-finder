@@ -1,32 +1,33 @@
+
 import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ image, onImageClick }) => {
-    const fullImage = () => onImageClick(image.largeImageURL);
-
-    return (
-    <li className={css.galleryItem}>
-      <img
-        src={image.webformatURL}
-        alt={image.tags}
-        className={css.image}
-        onClick={fullImage}
-      />
-    </li>
+const ImageGalleryItem = ({
+  webformatURL,
+  largeImageURL,
+  tags,
+  onClickImage,
+}) => {
+  return (
+    <>
+      <li className={css.galleryItem}>
+        <img
+          onClick={() => onClickImage(largeImageURL)}
+          className={css.image}
+          src={webformatURL}
+          alt={tags}
+          largeimage={largeImageURL}
+        />
+      </li>
+    </>
   );
 };
 
-ImageGalleryItem.defaultProps = {
-  tags: '',
-};
-
 ImageGalleryItem.propTypes = {
-  image: PropTypes.shape({
-    webformatURL: PropTypes.string.isRequired,
-    largeImageURL: PropTypes.string.isRequired,
-    tags: PropTypes.string,
-  }),
-  onImageClick: PropTypes.func.isRequired,
+  onClickImage: PropTypes.func,
+  webformatURL: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
 };
 
 export default ImageGalleryItem;

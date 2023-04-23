@@ -1,57 +1,39 @@
 import React, { Component } from 'react';
-import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
+import css from './Modal.module.css';
 
-const modalRoot = document.querySelector('#modal-root');
 
 class Modal extends Component{
     componentDidMount() {
-        window.addEventListener('keydown', this.handleKeyDown);
-    }
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
 
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.handleKeyDown);
-    }
-    handleKeyDown = event => {
-        if (event.code === 'Escape') {
-            this.props.onClose();
-        }
-    };
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
 
-    handleBackdropClick = event => {
-        if (event.currentTarget === event.target) {
-            this.props.onClose();
-        }
-    };
-    render() {
-        return createPortal(
-            <div onClick={this.handleBackdropClick}>
-                <div>{this.props.children}</div>
-            </div>,
-            modalRoot,
-        );
+  handleKeyDown = e => {
+    if (e.keyCode === 27 || e.currentTarget === e.target) {
+      return this.props.onModalClose();
     }
+  };
+
+  render() {
+    const { largeImageURL } = this.props;
+    return (
+      <div className={css.overlay} onClick={this.handleKeyDown}>
+        <div className={css.modal}>
+          <img src={largeImageURL} alt="" />
+        </div>
+      </div>
+    );
+  }
 }
 
-Modal.defaultProps = {
-    children: null,
-};
-
 Modal.propTypes = {
-    children: PropTypes.node,
-    onClose: PropTypes.func.isRequired,
+  onModalClose: PropTypes.func,
+  largeImageURL: PropTypes.string.isRequired,
 };
 export default Modal;
 
 
-// Під час кліку на елемент галереї повинно відкриватися модальне вікно з темним оверлеєм і відображатися 
-// велика версія зображення.Модальне вікно повинно закриватися по натисканню клавіші ESC або по кліку на оверлеї.
-
-// Зовнішній вигляд схожий на функціонал цього VanillaJS-плагіна, тільки замість білого модального вікна рендериться 
-// зображення(у прикладі натисніть Run).Анімацію робити не потрібно!
-
-// <div class="overlay">
-//   <div class="modal">
-//     <img src="" alt="" />
-//   </div>
-// </div>

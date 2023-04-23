@@ -1,11 +1,19 @@
-import axios from 'axios';
-const KEY = '34322980-08373f8358d1fe63d0b7301a8';
+    import axios from 'axios';
 
-axios.defaults.baseURL = 'https://pixabay.com/api/';
 
-const fetchImages = async (query, currentPage) => {
-    const { data } = await axios.get(`https://pixabay.com/api/?q=${query}&page=${currentPage}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`,);
-
-    return data;
-};
-export default fetchImages;
+    const fetchImages = async (query, page) => {
+    const response = await axios.get('https://pixabay.com/api/', {
+        method: 'get',
+        params: {
+        key: '34322980-08373f8358d1fe63d0b7301a8',
+        q: query,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: true,
+        per_page: 12,
+        page: page,
+        },
+    });
+    return response.data.hits;
+    };
+    export default fetchImages;
