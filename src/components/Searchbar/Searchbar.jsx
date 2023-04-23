@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
 
 class Searchbar extends Component{
-    state= {
+    state = {
         query: '',
     }
 
@@ -18,7 +18,7 @@ class Searchbar extends Component{
         event.preventDefault();
 
         if (!this.state.query) return;
-        this.props.onSearch(this.state.query);
+        this.props.onSubmit(this.state.query);
         this.resetForm();
     };
     resetForm = () =>

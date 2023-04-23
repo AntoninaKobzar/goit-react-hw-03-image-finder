@@ -5,7 +5,7 @@ const ImageGalleryItem = ({ image, onImageClick }) => {
     const fullImage = () => onImageClick(image.largeImageURL);
 
     return (
-    <li className={scc.galleryItem}>
+    <li className={css.galleryItem}>
       <img
         src={image.webformatURL}
         alt={image.tags}
