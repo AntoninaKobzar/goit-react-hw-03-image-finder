@@ -1,29 +1,30 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
+import React, { Component } from 'react';
+import Searchbar from '../components/Searchbar';
+import ImageGallery from '../components/ImageGallery';
+
+class App extends Component{
+  state = {
+    data: {
+      id:'',
+      webformatURL:'',
+      largeImageURL:'',
+    },
+  }
+
+  componentDidMount() {
+    
+    fetch('https://pixabay.com/api/?q=cat&page=1&key=34322980-08373f8358d1fe63d0b7301a8&image_type=photo&orientation=horizontal&per_page=12')
+      .then(result => result.json())
+      .then(data => this.setState({data}))
+    }
+    
+  render() {
+      return (
+        <div>
+          <Searchbar onSubmit={this.handleSubmit} />
+          <ImageGallery images={images} onImageClick={this.handleGalleryItem} />
+        </div>
+    ); 
+  }
 };
-// Зареєструйся та отримай приватний ключ доступу. Для HTTP-запитів використовуй публічний сервіс пошуку зображень Pixabay.
-
-// URL-рядок HTTP-запиту.
-
-// https://pixabay.com/api/?q=cat&page=1&key=your_key&image_type=photo&orientation=horizontal&per_page=12
-
-// Pixabay API підтримує пагінацію, за замовчуванням параметр page дорівнює 1. Нехай у відповіді надходить по 12 об'єктів, встановлено в параметрі per_page. Не забудь, що під час пошуку за новим ключовим словом, необхідно скидати значення page до 1.
-
-// У відповіді від апі приходить масив об'єктів, в яких тобі цікаві лише наступні властивості.
-
-// id - унікальний ідентифікатор
-// webformatURL - посилання на маленьке зображення для списку карток
-// largeImageURL - посилання на велике зображення для модального вікна
+export default App;
