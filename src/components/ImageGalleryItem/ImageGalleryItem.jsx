@@ -6,25 +6,21 @@ const ImageGalleryItem = ({
   webformatURL,
   largeImageURL,
   tags,
-  onClickImage,
+  onModalOpen,
 }) => {
   return (
     <>
       <li className={css.galleryItem}>
-        <img
-          onClick={() => onClickImage(largeImageURL)}
-          className={css.image}
-          src={webformatURL}
-          alt={tags}
-          largeimage={largeImageURL}
-        />
+      <div onClick={() => onModalOpen(largeImageURL, tags)}>
+        <img className="ImageGalleryItem-image" src={webformatURL} alt={tags} />
+      </div>
       </li>
     </>
   );
 };
 
 ImageGalleryItem.propTypes = {
-  onClickImage: PropTypes.func,
+  onModalOpen: PropTypes.func.isRequired,
   webformatURL: PropTypes.string.isRequired,
   largeImageURL: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,

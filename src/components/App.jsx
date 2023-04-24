@@ -4,7 +4,7 @@ import Searchbar from '../components/Searchbar';
 import Button from '../components/Button';
 import Loader from '../components/Loader';
 import Modal from '../components/Modal';
-import fetchImages from '../api/api';
+import getImages from '../services/api';
 import ImageGallery from '../components/ImageGallery';
 import css from './App.module.css';
 
@@ -14,76 +14,71 @@ class App extends Component{
       query: '',
       page: 1,
       isLoading: false,
-      showBtn: false,
       showModal: false,
       largeImageURL: '',
+      tags: '',
+      total:0,
       error: null,
-    };
-  onSubmit = e => {
-    e.preventDefault();
-    this.setState({
-      query: e.target.search.value,
-      isLoading: true,
-      images: [],
-    });
-    this.fetchGallery(e.target.search.value, this.state.page);
   };
-
-  onNextPage = () => {
-    this.setState({
-      page: this.state.page + 1,
-      isLoading: true,
-    });
-    this.fetchGallery(this.state.query, this.state.page + 1);
-  };
-
-  onClickImage = url => {
-    this.setState({ showModal: true, largeImageURL: url });
-  };
-
-  onModalClose = () => {
-    this.setState({ showModal: false, largeImageURL: '' });
-  };
-
-  async fetchGallery(query, page) {
+  
+  componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    if (prevState.query !== query || prevState.page !== page) {
+      this.fetchImages(query, page);
+    }
+  }
+  fetchImages = async (query, page) => {
     try {
-      const response = await fetchImages(query, page);
-      this.setState(prevState => {
-        return {
-          images: [...prevState.images, ...response],
-        };
-      });
-      if (response.length < 12) {
-        this.setState({ showBtn: false });
+      this.setState({ isLoading: true });
+      const data = await getImages(query, page);
+      if (data.hits.length === 0) {
+        return Notify.failure('No matches found!');
       }
-      if (response.length === 12) {
-        this.setState({ showBtn: true });
-      }
-      if (response.length === 0) {
-        Notify.failure('No matches found!');
-      }
+      this.setState(({ images }) => ({
+        images: [...images, ...data.hits],
+        total: data.totalHits,
+      }));
     } catch (error) {
       this.setState({ error });
     } finally {
       this.setState({ isLoading: false });
     }
-  }
+  };
+
+  handleSubmit = query => {
+    this.setState({ query, page: 1, images: [] });
+  };
+  onLoadMore = () => {
+    this.setState(prev => ({ page: prev.page + 1 }));
+  };
+  onModalOpen = (largeImage, tags) => {
+    this.setState({ showModal: true, largeImage, tags });
+  };
+  onModalClose = () => {
+    this.setState({ showModal: false, largeImage: '', tags:'' });
+  };
 
   render() {
-    const { images, isLoading, showBtn, showModal, largeImageURL } = this.state;
-
+    const { images, isLoading,total,error, showModal,largeImage,tags } = this.state;
+    const totalPage = total / images.length;
     return (
       <div className={css.app}>
-        <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery images={images} onClickImage={this.onClickImage} />
+        <Searchbar onSubmit={this.handleSubmit} />
         {isLoading && <Loader />}
-        {showBtn && <Button onNextPage={this.onNextPage} />}
+        {images.length !== 0 && (
+          <ImageGallery gallery={images} onModalOpen={this.onModalOpen} />
+        )}
+        {totalPage > 1 && !isLoading && images.length !== 0 && (
+          <Button onClick={this.onLoadMore} />
+        )}
         {showModal && (
           <Modal
-            largeImageURL={largeImageURL}
+            largeImage={largeImage}
+            tags={tags}
             onModalClose={this.onModalClose}
           />
         )}
+        {error &&(<span>Try another option</span>)}
       </div>
     );
   }

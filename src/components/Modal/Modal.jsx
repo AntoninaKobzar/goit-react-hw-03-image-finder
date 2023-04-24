@@ -13,17 +13,26 @@ class Modal extends Component{
   }
 
   handleKeyDown = e => {
-    if (e.keyCode === 27 || e.currentTarget === e.target) {
-      return this.props.onModalClose();
+    const { onModalClose } = this.props;
+    if (e.key === 'Escape') {
+      onModalClose();
+    }
+  };
+
+  handleCloseBackdrop = e => {
+    const { onModalClose } = this.props;
+
+    if (e.currentTarget === e.target) {
+      onModalClose();
     }
   };
 
   render() {
-    const { largeImageURL } = this.props;
+    const { largeImage,tags } = this.props;
     return (
-      <div className={css.overlay} onClick={this.handleKeyDown}>
+      <div className={css.overlay} onClick={this.handleCloseBackdrop}>
         <div className={css.modal}>
-          <img src={largeImageURL} alt="" />
+          <img src={largeImage} alt={tags} width="1000"/>
         </div>
       </div>
     );
@@ -31,8 +40,9 @@ class Modal extends Component{
 }
 
 Modal.propTypes = {
-  onModalClose: PropTypes.func,
-  largeImageURL: PropTypes.string.isRequired,
+  onModalClose: PropTypes.func.isRequired,
+  largeImage: PropTypes.string.isRequired,
+  tags:PropTypes.string.isRequired,
 };
 export default Modal;
 
